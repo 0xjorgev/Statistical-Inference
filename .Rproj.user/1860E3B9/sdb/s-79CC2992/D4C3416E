@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Coursera's Statistical Inference Final Project Part - I, Simulation Exercise\"\nauthor: \"Jorge Mendoza\"\ndate: \"August 11, 2017\"\noutput:\n  html_document: default\n  pdf_document: default\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\n## Overview\n\nOn this report we will provide the results of a simulation excersice to investigate the exponential distribution using R and make theorical comparasions with the Central Limit or CLT.\n\nAccording to the CLT (https://en.wikipedia.org/wiki/Central_limit_theorem), if a sample has at least 30 independant observations and assuming that the observations are independent (not strongly related), the distribution sample mean will behavie approximatedly to the normal distrubution, ruled by the math function:\n\n$\\bar{x}_{n}$ ~ $N(\\mu, \\frac{\\sigma }{\\sqrt{n}})$.\n\nIn order to simulate the exponential distribution using R we will run the function `rexp(n, lambda)`, with the given data:\n\n$n = 40$ \n$\\lambda = 0.2$\n\nAnd compare this values with the given function for the Normal distribution $\\bar{N}$\n\n$N(\\frac{1}{0.2}, \\frac{\\frac{1}{0.2}}{\\sqrt{40}})$ \n\nNow let's run a 1000 simulations with 40 elements each, rule by the Exponential distribution.\n\n$Exp(\\frac{1}{0.2}, \\frac{1}{0.2})$\n\nAnd let's calculate the mean of each of those 1000 exponential distributions with size 40. Based on the CLT the mean of those 1000 simulations would be close to  $\\frac{1}{\\lambda} = \\frac{1}{0.2} = 5$ according to the Normal distribution  \n\n\n```{r}\nlibrary(ggplot2)\nset.seed(1234)\n\nlambda <- 0.2\nn <- 40\nsim <- 1000\nexpSampleMeans <- NULL\n\nfor (i in 1:sim){\n  expSampleMeans <- c(expSampleMeans, mean(rexp(n, lambda)))\n}\n\nsampleMean <- mean(expSampleMeans)\nsampleStandar_deviation <- sd(expSampleMeans)\nsampleVariance <- var(expSampleMeans)\n\nhist(expSampleMeans, col = \"blue\")\n\nround(mean(expSampleMeans), 2)\n\nvar <- (1 / lambda)^2 / (n) \nmu <- 1/lambda\n\nmu\n\n\nvar\nround(mean(sampleVariance), 2)\n```\n\n## Sample Distribution and Normal Distribution\n\nBoth the mean of the sample and its variance are close to the theorical values (mean and variance) of the normal distribution. \n\nIn order to take a closer look at this values, lets now create a plot that contains both the sample means with a vertical line on its mean and lets overlap the normal distribution curve over those same values and another vertical line that shows the normal distribution mean (in red)\n\n```{r}\n\ndata <- as.data.frame(expSampleMeans)\nplot <- ggplot(data, aes(x = expSampleMeans));\nplot <- plot + geom_histogram(binwidth = 0.4, color = 'blue', fill = 'white', aes(y = ..density..)) \nplot <- plot + stat_function(fun = dnorm, color = 'red', args = list(mean = 5, sd = sqrt(0.625))) \nplot <- plot + geom_vline(xintercept = mean(expSampleMeans), color=\"blue\");\nplot <- plot + geom_vline(xintercept = mu, color=\"red\");\nplot <- plot + labs(colour = \"Blue\")\nplot <- plot + labs(x = \"Sample Means\")\nplot <- plot + labs(title = \"Theorical Distribution Vs. Sample Distribution\")\n\nplot\n```\n\n## Conclusions\n\nThe data fits in the normal distribution curve, as it migth be appreciated in the previous graph. To be more specific we migth stand that with the given conditions Exponential distribution, $n = 40$ and $\\lambda = 0.2$ \n\nThe distribution is approximately to $N(\\frac{1}{0.2}, \\frac{\\frac{1}{0.2}}{\\sqrt{40}})$ ",
+    "created" : 1502457812023.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2210187446",
+    "id" : "D4C3416E",
+    "lastKnownWriteTime" : 1502764166,
+    "last_content_update" : 1502764166716,
+    "path" : "~/DataScience/Statistical Inference/Final Project/Part-I.Rmd",
+    "project_path" : "Part-I.Rmd",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

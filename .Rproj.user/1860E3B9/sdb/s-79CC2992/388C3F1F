@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "---\n#title: \"Coursera's Statistical Inference Final Project Part - I, Simulation Exercise\"\n#author: \"Jorge Mendoza\"\n#date: \"August 11, 2017\"\n#output: html_document\n---\n\n##### - Overview\n\n###### On this report we will investigate the exponential distribution using R and make theorical comparasions with the Central Limit Theorem or CLT.\n\n###### In order to simulate the exponential distribution using R we will run the function `rexp(n, lambda)`\n\nset.seed(1234)\n\nlibrary(ggplot2)\n\nlambda <- 0.2\nn <- 40\nsim <- 1000\nexpSampleMeans <- NULL\n\nfor (i in 1:sim){\n  expSampleMeans <- c(expSampleMeans, mean(rexp(n, lambda)))\n}\n\nsampleMean <- mean(expSampleMeans)\nsampleStandar_deviation <- sd(expSampleMeans)\nsampleVariance <- var(expSampleMeans)\n\nhist(expSampleMeans, col = \"blue\")\n\nvar <- (1 / lambda)^2 / (n) \nmu <- 1/lambda\n\ndata <- as.data.frame(expSampleMeans)\nplot <- ggplot(data, aes(x = expSampleMeans));\nplot <- plot + geom_histogram(binwidth = 0.4, color = 'blue', fill = 'white', aes(y = ..density..)) \nplot <- plot + stat_function(fun = dnorm, color = 'black', args = list(mean = 5, sd = sqrt(0.625))) \nplot <- plot + geom_vline(xintercept = mean(expSampleMeans), color=\"blue\");\nplot <- plot + geom_vline(xintercept = mu, color=\"red\");\nplot <- plot + labs(colour = \"Blue\")\nplot <- plot + labs(x = \"Sample Means\")\nplot <- plot + labs(title = \"Theorical Distribution Vs. Sample Distribution\")\nplot\n",
+    "created" : 1502360047639.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1677778653",
+    "id" : "388C3F1F",
+    "lastKnownWriteTime" : 1502675956,
+    "last_content_update" : 1502675956693,
+    "path" : "~/DataScience/Statistical Inference/Final Project/Part-I.R",
+    "project_path" : "Part-I.R",
+    "properties" : {
+        "notebook_format" : "html_document",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

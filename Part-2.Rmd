@@ -1,0 +1,124 @@
+---
+title: "Coursera's Statistical Inference Final Project Part - 2, Tooth Growth Data Analysis"
+author: "Jorge Mendoza"
+date: "August 11, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+## Overview
+
+On this report we will provide the results of the statistical inference over the ToothGrowth data of the R data set.
+
+This package describes the effect of vitamin C on tooth growth of guinea pigs.
+
+The ToothGrowth data contanis 60 (let's asume independant) observations of 3 variables:
+
+- Len: Guinea pigs Tooth length in millimiters (mm). Numeric
+- supp: Supplement type for the Vitamin C (Orange Juice or Ascorbic Acid). String
+- dose: Miligrams of the dose (mg) contains three posible values 0.5 mg, 1 mg, 2 mg. Numeric.
+
+##Exploratory Data Analysis
+
+```{r, eval = TRUE}
+# load data
+data(ToothGrowth)
+# let's take a look at the data
+head(ToothGrowth)
+
+# let's check the dimensions of the data
+dim(ToothGrowth)
+
+# let's verify the uniqueness of the supplement column
+unique(ToothGrowth$supp)
+
+# let's verify the uniqueness of the dose column
+unique(ToothGrowth$dose)
+
+# let's get a brief summary of the data
+summary(ToothGrowth)
+
+```
+
+Now that we have had a quick review of the data let's start the further exploration.
+
+```{r, eval = TRUE}
+mean(ToothGrowth$len)
+sd(ToothGrowth$len)
+var(ToothGrowth$len)
+```
+
+The data shows a tooth length mean of 18.81333 a standar deviation of 7.649315 and a variance of  58.51202. Let's plot the length data asociated with supplement type and dose.
+
+```{r, eval = TRUE}
+plot <- qplot(supp
+              ,len
+              ,data=ToothGrowth
+              ,facets=~dose
+              ,main="Guinea pigs Tooth growth by supplement type and dosage (mg)"
+              ,xlab="Supplement type"
+              ,ylab="Tooth length") 
+
+plot + geom_boxplot(aes(fill = supp))
+```
+
+This plot shows that there is an obvius difference in tooth growth depending on the Supplement type and the dose, based on this let's now create the data assumptions and the hypotesis.
+
+##Hypotesis
+
+Since the guinea pigs are divided into 3 groups each sample group holds less than 30 samples per group, actually 20 per group, so we will create two assumptions about the data:
+
+- Each guinea pig must have been selected randomly and it has not a strong relationship with the other groups
+- The data from the observations behavies like is normally distributed
+
+Now let's split the data regarding the supplement type
+```{r, eval = TRUE}
+OJ = ToothGrowth$len[ToothGrowth$supp == 'OJ']
+VC = ToothGrowth$len[ToothGrowth$supp == 'VC']
+```
+
+And now let's try the first Hypotesis test, using a confidence interval of 95%, leaving and error tolerance of 5% with a null hypotesis that both (Orange Juice and Ascorbic Acid) means are equal.
+
+```{r, eval = TRUE}
+t.test(OJ, VC, alternative = "greater", paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
+
+With a p-value of 0.03 been smaller than 5%, the null hypotesis proves to be rejected and the validates the altenative hypotesis. But now we must test against the dose to validate if only the supplement creates a statistical significant difference.
+
+Let create a new hypotesis where we will evaluate the 3 dosis type regardless of the supplement type this time.
+
+```{r, eval = TRUE}
+dose05mg = ToothGrowth$len[ToothGrowth$dose == 0.5]
+dose1mg = ToothGrowth$len[ToothGrowth$dose == 1]
+dose2mg = ToothGrowth$len[ToothGrowth$dose == 2]
+```
+
+Let's create two new t tests comparing the 0.5mg dose against the 1 mg dose and then make the a simillar t test between 1 mg and 2 mg.
+
+```{r, eval = TRUE}
+t.test(dose05mg, dose1mg, alternative = "less", paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+
+t.test(dose1mg, dose2mg, alternative = "less", paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
+
+And now that there is also evidence that the dose affects the tooth growth, let's create a final hypotesis to t test the supplement type with the higher dose of Vitamin C.
+
+```{r, eval = TRUE}
+OJ2 = ToothGrowth$len[ToothGrowth$supp == 'OJ' & ToothGrowth$dose == 2]
+VC2 = ToothGrowth$len[ToothGrowth$supp == 'VC' & ToothGrowth$dose == 2]
+
+t.test(OJ2, VC2, alternative = "two.sided", paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
+
+##Conclusions
+
+Througth the previous tests we were able to demostrate a statistical significant difference in the tooth growth based on supplements of Vitamin C over Orange Juice or Ascorbic Acid and also showen that the dose of the supplements also affects the length of the tooths.
+
+
+
