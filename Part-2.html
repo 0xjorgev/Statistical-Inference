@@ -197,7 +197,7 @@ plot + geom_boxplot(aes(fill = supp))</code></pre>
 <p>Now let’s split the data regarding the supplement type</p>
 <pre class="r"><code>OJ = ToothGrowth$len[ToothGrowth$supp == 'OJ']
 VC = ToothGrowth$len[ToothGrowth$supp == 'VC']</code></pre>
-<p>And now let’s try the first Hypotesis test, using a confidence interval of 95%, leaving and error tolerance of 5%</p>
+<p>And now let’s try the first Hypotesis test, using a confidence interval of 95%, leaving and error tolerance of 5% with a null hypotesis that both (Orange Juice and Ascorbic Acid) means are equal.</p>
 <pre class="r"><code>t.test(OJ, VC, alternative = &quot;greater&quot;, paired = FALSE, var.equal = FALSE, conf.level = 0.95)</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
@@ -210,6 +210,56 @@ VC = ToothGrowth$len[ToothGrowth$supp == 'VC']</code></pre>
 ## sample estimates:
 ## mean of x mean of y 
 ##  20.66333  16.96333</code></pre>
+<p>With a p-value of 0.03 been smaller than 5%, the null hypotesis proves to be rejected and the validates the altenative hypotesis. But now we must test against the dose to validate if only the supplement creates a statistical significant difference.</p>
+<p>Let create a new hypotesis where we will evaluate the 3 dosis type regardless of the supplement type this time.</p>
+<pre class="r"><code>dose05mg = ToothGrowth$len[ToothGrowth$dose == 0.5]
+dose1mg = ToothGrowth$len[ToothGrowth$dose == 1]
+dose2mg = ToothGrowth$len[ToothGrowth$dose == 2]</code></pre>
+<p>Let’s create two new t tests comparing the 0.5mg dose against the 1 mg dose and then make the a simillar t test between 1 mg and 2 mg.</p>
+<pre class="r"><code>t.test(dose05mg, dose1mg, alternative = &quot;less&quot;, paired = FALSE, var.equal = FALSE, conf.level = 0.95)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  dose05mg and dose1mg
+## t = -6.4766, df = 37.986, p-value = 6.342e-08
+## alternative hypothesis: true difference in means is less than 0
+## 95 percent confidence interval:
+##       -Inf -6.753323
+## sample estimates:
+## mean of x mean of y 
+##    10.605    19.735</code></pre>
+<pre class="r"><code>t.test(dose1mg, dose2mg, alternative = &quot;less&quot;, paired = FALSE, var.equal = FALSE, conf.level = 0.95)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  dose1mg and dose2mg
+## t = -4.9005, df = 37.101, p-value = 9.532e-06
+## alternative hypothesis: true difference in means is less than 0
+## 95 percent confidence interval:
+##      -Inf -4.17387
+## sample estimates:
+## mean of x mean of y 
+##    19.735    26.100</code></pre>
+<p>And now that there is also evidence that the dose affects the tooth growth, let’s create a final hypotesis to t test the supplement type with the higher dose of Vitamin C.</p>
+<pre class="r"><code>OJ2 = ToothGrowth$len[ToothGrowth$supp == 'OJ' &amp; ToothGrowth$dose == 2]
+VC2 = ToothGrowth$len[ToothGrowth$supp == 'VC' &amp; ToothGrowth$dose == 2]
+
+t.test(OJ2, VC2, alternative = &quot;two.sided&quot;, paired = FALSE, var.equal = FALSE, conf.level = 0.95)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  OJ2 and VC2
+## t = -0.046136, df = 14.04, p-value = 0.9639
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -3.79807  3.63807
+## sample estimates:
+## mean of x mean of y 
+##     26.06     26.14</code></pre>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<p>Througth the previous tests we were able to demostrate a statistical significant difference in the tooth growth based on supplements of Vitamin C over Orange Juice or Ascorbic Acid and also showen that the dose of the supplements also affects the length of the tooths.</p>
 </div>
 
 
